@@ -4,6 +4,10 @@ pragma solidity >=0.7.0 <0.9.0;
 
 contract PropertyContract
 {
+
+    enum Status {NotExist, Pending, Approved, Rejected}
+
+
     struct Property{
         address owernerAddress;
         string location;
@@ -14,7 +18,11 @@ contract PropertyContract
         uint prop_id;
     }
 
+    // initialised the contract
+    constructor() public {
 
+
+    }
 
 
 }
