@@ -40,7 +40,7 @@
 
 ### Function 
 
-| function | description | private/public |
+| function | private/public | description |
 |----------|-------------|----------------|
 | createProperty          |             |                |
 | propertiesCount          |             |                |
