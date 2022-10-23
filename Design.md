@@ -1,6 +1,9 @@
-# Property Token
+## Property Token
 
-## Datatypes
+* mint/ createtoken
+* set target price and details of the properties, such as owner and physical address
+
+### Datatypes
 
 | data field | data type | compulsory | private/public |description|
 |------------|-----------|------------|----------------|----------------|
@@ -15,9 +18,8 @@
 | collateralised           |  bool         |        Y    |   private             | whether the property token has been collateralised to borrow money|
 | state           | state          |      Y      |    private            | state of the property (Activated, Pending, In Transaction, Sold) |
 
-## Function
-* mint/ createtoken
-* set target price
+### Function
+
 
 | function | private/public | description |
 |----------|-------------|----------------|
@@ -26,9 +28,9 @@
 |          |             |                |
 
 
-## Property Factory
+### Property Factory
 
-* to create new instances of property
+* to create new instances of property contracts
 * to view instances of property available
 * for secondary market of property (trading of property after issuance)
 
@@ -36,7 +38,7 @@
 |------------|-----------|------------|----------------|----------------|
 |Properties  | list          |            |    private            | List of properties|
 
-## Function 
+### Function 
 
 | function | description | private/public |
 |----------|-------------|----------------|
