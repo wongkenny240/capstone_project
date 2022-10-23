@@ -2,15 +2,18 @@
 
 ## Datatypes
 
-* latitiude (float)
-* longtitude (float)
-* floor (string)
-* block (string)
-* flat (string)
-* target selling price (float)
-* address (string)
-* owner address (address)
-* Property state (Created
+| data field | data type | compulsory | private/public |
+|------------|-----------|------------|----------------|
+| latitiude      | uint          |            |                |
+| longtitude           | uint          |            |                |
+| floor           |   string        |            |                |
+| block           |   string        |            |                |
+| flat           |    string       |            |                |
+| property address           | string           |            |                |
+| target selling price           |   uint        |            |                |
+| owner address           |           |            |                |
+|            |           |            |                |
+
 
 ## Function
 * mint/ createtoken
