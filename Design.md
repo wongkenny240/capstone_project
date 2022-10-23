@@ -10,6 +10,7 @@
 * target selling price (float)
 * address (string)
 * owner address (address)
+* Property state (Created
 
 ## Function
 * mint/ createtoken
