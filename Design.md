@@ -1,6 +1,6 @@
 ## Property Token
 
-* mint/ createtoken
+* mint/ create token (i.e. register contract)
 * set target price and details of the properties, such as owner and physical address
 
 ### Datatypes
