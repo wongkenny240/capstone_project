@@ -30,6 +30,7 @@
 
 * to create new instances of property
 * to view instances of property available
+* for secondary market of property (trading of property after issuance)
 
 | data field | data type | compulsory | private/public |description|
 |------------|-----------|------------|----------------|----------------|
@@ -41,9 +42,11 @@
 |----------|-------------|----------------|
 | createProperty          |             |                |
 | propertiesCount          |             |                |
-|          |             |                |
-
-
+| view property         |             |                |
+| createSale         |             | create auction of property                |
+| approveAndTransfer         |             | approve and transfer the property   |
+| cancelSale         |             | cancel the auction   |
+| bidOnSale         |             | submit a bid for the sale, if bid price more than target selling price, sale is completed successfully and the property is transferred to the bidder (buyer), otherwise return to the seller  |
 
 # Mortgage Token
 
