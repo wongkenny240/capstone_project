@@ -28,7 +28,7 @@
 |          |             |                |
 
 
-### Property Factory
+### Property Repository
 
 * to create new instances of property contracts
 * to view instances of property available
