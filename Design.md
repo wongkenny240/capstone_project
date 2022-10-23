@@ -24,7 +24,7 @@
 | function | private/public | description |
 |----------|-------------|----------------|
 | setTargetPrice         |             | set the target selling price of the property               |
-| createToken         |             |                |
+| registerContract         |             |   register the property contract on the chain and return the token id to the user             |
 |          |             |                |
 
 
