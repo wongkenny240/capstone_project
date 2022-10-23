@@ -50,5 +50,5 @@
 | cancelSale         |             | cancel the auction   |
 | bidOnSale         |             | submit a bid for the sale, if bid price more than target selling price, sale is completed successfully and the property is transferred to the bidder (buyer), otherwise return to the seller  |
 
-# Mortgage Token
+## Mortgage Token
 
