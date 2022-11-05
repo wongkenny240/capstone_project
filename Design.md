@@ -52,3 +52,15 @@
 
 ## Mortgage Token
 
+Morgage Applicant (Struct)
+
+| data field | data type | compulsory | private/public |description|
+|------------|-----------|------------|----------------|----------------|
+| Surname  | string          |            |                | |
+| LastName  | string           |            |                | |
+| ID No  | string           |            |                | |
+| Mobile  | string           |            |                | |
+| Email  | string           |            |                | |
+| Residential Address  | string           |            |                | |
+| Employment Status  | string           |            |                | Employed/Self employed|
+| Type of Income | string           |            |                | Regular/ Irregular/ Commission based|
