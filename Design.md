@@ -64,3 +64,5 @@ Morgage Applicant (Struct)
 | Residential Address  | string           |            |                | |
 | Employment Status  | string           |            |                | Employed/Self employed|
 | Type of Income | string           |            |                | Regular/ Irregular/ Commission based|
+| Base Salary | integer           |            |                | Base Salary|
+| Irregular Income | integer           |            |                | Irregular income|
