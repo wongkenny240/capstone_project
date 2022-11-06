@@ -2,14 +2,15 @@
 
 pragma solidity >=0.7.0 <0.9.0;
 
-import "@openzeppelin/contracts/token/ERC721/ERC721Full.sol";
-import "@openzeppelin/contracts/drafts/Counters.sol";
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/utils/Counters.sol";
 
-contract PropertyContract is ERC721Full
+contract PropertyContract is ERC721
 {
 
-    enum Status {NotExist, Pending, Approved, Rejected}
+    enum Status {NotExist, OnSale, Sold}
 
+    
 
     struct Property{
         address owernerAddress;
@@ -23,13 +24,13 @@ contract PropertyContract is ERC721Full
 
     // initialised the contract
     constructor(string memory _name, string memory _symbol) 
-        ERC721Full(_name, _symbol) public {
+        ERC721(_name, _symbol) public {
     }
 
-    function registerContract(uint256 _tokenId, string memory _uri) public returns (){
+    function registerContract(uint256 _tokenId, string memory _uri) public {
         _mint(msg.sender, _tokenId);
-        addContractMetadata(_tokenId, _uri);
-        emit ContractRegistered(msg.sender, _tokenId);
+        //addContractMetadata(_tokenId, _uri);
+        //emit ContractRegistered(msg.sender, _tokenId);
     }
 
 
