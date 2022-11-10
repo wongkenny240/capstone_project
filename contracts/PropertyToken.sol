@@ -15,12 +15,14 @@ contract PropertyContract is ERC721
 
     mapping(uint => Property[]) private _propertylist;
 
+    mapping(uint => uint) private _target_price_list;
+
     event ContractOwnerShipTransferred(address owner);
 
     enum Status {NotExist, OnSale, Sold}
 
     address _owner;
-    uint target_selling_price;
+    uint _target_selling_price;
 
     struct Property{
         string location;
@@ -37,12 +39,14 @@ contract PropertyContract is ERC721
 
     }
 
+    // function to register property
     function _registerProperty(
         string memory _location, 
         string memory _unit_block, 
         string memory _unit_floor, 
         string memory _unit_flat, 
-        string memory _prop_id) public returns(uint256){
+        string memory _prop_id,
+        uint256 _target_price) public returns(uint256){
         //location = _location;
 
         Property memory property = Property(
@@ -56,16 +60,22 @@ contract PropertyContract is ERC721
         uint256 currentItemId = _tokenIds.current();
         _propertylist[currentItemId].push(property);
         _ownerlist[currentItemId] = msg.sender;
+        _target_price_list[currentItemId] = _target_price;
         _mint(msg.sender, currentItemId);
         _tokenIds.increment();
         return currentItemId;
     }
 
-    function getPropertyDetail() public{
+    function get_property_location(uint tokenId) public{
 
     }
 
-    function bidProperty(uint bidPrice) public{
+    function bidProperty(uint tokenId, uint bidPrice) external payable {
+        require(msg.sender != _ownerlist[tokenId], "Owner cannot buy the property");
+        require(bidPrice >= _target_price_list[tokenId], "You bid price is lower than the target selling price");
+
+        address seller = ownerOf(tokenId);
+        _transfer(seller, msg.sender, tokenId);
 
     }
 
