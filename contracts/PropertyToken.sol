@@ -55,7 +55,7 @@ contract PropertyContract is ERC721
 
         uint256 currentItemId = _tokenIds.current();
         _propertylist[currentItemId].push(property);
-        _ownerlist[currentItemId].push(msg.sender);
+        _ownerlist[currentItemId] = msg.sender;
         _mint(msg.sender, currentItemId);
         _tokenIds.increment();
         return currentItemId;
