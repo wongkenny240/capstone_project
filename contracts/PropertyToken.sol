@@ -10,12 +10,17 @@ contract PropertyContract is ERC721
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
 
-
+    // map the token id to an address
     mapping(uint => address) private _ownerlist;
 
+    // map the token id to property details
     mapping(uint => Property[]) private _propertylist;
 
+    // dict to store the target price of each property
     mapping(uint => uint) private _target_price_list;
+
+    //  dict to store the property status
+    mapping(uint => bool) private _property_status_list;
 
     event ContractOwnerShipTransferred(address owner);
 
@@ -61,6 +66,8 @@ contract PropertyContract is ERC721
         _propertylist[currentItemId].push(property);
         _ownerlist[currentItemId] = msg.sender;
         _target_price_list[currentItemId] = _target_price;
+        //for sale = true
+        _property_status_list[currentItemId] = true;
         _mint(msg.sender, currentItemId);
         _tokenIds.increment();
         return currentItemId;
@@ -76,10 +83,9 @@ contract PropertyContract is ERC721
 
         address seller = ownerOf(tokenId);
         _transfer(seller, msg.sender, tokenId);
-
+        // for sale = false
+        _property_status_list[tokenId] = false;
     }
-
-
 
 
     //function registerContract(uint256 _tokenId, string memory _uri) public {
