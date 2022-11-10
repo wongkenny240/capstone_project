@@ -7,10 +7,19 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 
 contract PropertyContract is ERC721
 {
+    using Counters for Counters.Counter;
+    Counters.Counter private _tokenIds;
+
+
+    mapping(uint => address) private _ownerlist;
+
+    mapping(uint => Property[]) private _propertylist;
+
+    event ContractOwnerShipTransferred(address owner);
 
     enum Status {NotExist, OnSale, Sold}
 
-    address owner;
+    address _owner;
     uint target_selling_price;
 
     struct Property{
@@ -22,12 +31,20 @@ contract PropertyContract is ERC721
     }
 
     // initialised the contract
-    constructor(string memory _name, string memory _symbol) 
-        ERC721(_name, _symbol) public {
+    constructor() ERC721("PropertyTokens", "PT") {
+        _owner = msg.sender;
+        emit ContractOwnerShipTransferred(_owner);
+
     }
 
-    function registerProperty(string memory _location, string memory _unit_block, string memory _unit_floor, string memory _unit_flat, string memory _prop_id) public {
+    function _registerProperty(
+        string memory _location, 
+        string memory _unit_block, 
+        string memory _unit_floor, 
+        string memory _unit_flat, 
+        string memory _prop_id) public returns(uint256){
         //location = _location;
+
         Property memory property = Property(
             _location,
             _unit_block,
@@ -35,10 +52,17 @@ contract PropertyContract is ERC721
             _unit_flat,
             _prop_id
         );
+
+        uint256 currentItemId = _tokenIds.current();
+        _propertylist[currentItemId].push(property);
+        _ownerlist[currentItemId].push(msg.sender);
+        _mint(msg.sender, currentItemId);
+        _tokenIds.increment();
+        return currentItemId;
     }
 
     function getPropertyDetail() public{
-        
+
     }
 
     function bidProperty(uint bidPrice) public{
@@ -46,11 +70,14 @@ contract PropertyContract is ERC721
     }
 
 
-    function registerContract(uint256 _tokenId, string memory _uri) public {
-        _mint(msg.sender, _tokenId);
+
+
+    //function registerContract(uint256 _tokenId, string memory _uri) public {
+    //    _mint(msg.sender, _tokenId);
+    //    _registerProperty()
         //addContractMetadata(_tokenId, _uri);
         //emit ContractRegistered(msg.sender, _tokenId);
-    }
+    //}
 
 
 }
