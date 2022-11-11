@@ -99,6 +99,19 @@ contract PropertyContract is IERC721Metadata, ERC721
         _property_status_list[tokenId] = for_sale;
     }
 
+    function setTokenURI(uint256 tokenId, string memory URI) public {
+        address owner = _ownerlist[tokenId];
+        require(owner != address(0), "ERROR: token id is not valid");
+        _tokenURIs[tokenId] = URI;
+    }
+
+
+    function tokenURI(uint256 tokenId) public view override(ERC721, IERC721Metadata) returns (string memory) {
+        address owner = _ownerlist[tokenId];
+        require(owner != address(0), "ERROR: token id is not valid");
+        return _tokenURIs[tokenId];
+    }
+
 
     function bidProperty(uint tokenId, uint bidPrice) external payable {
         require(msg.sender != _ownerlist[tokenId], "Owner cannot buy the property");
