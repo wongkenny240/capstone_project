@@ -45,7 +45,7 @@ contract PropertyContract is ERC721
     }
 
     // function to register property
-    function _registerProperty(
+    function registerProperty(
         string memory _location, 
         string memory _unit_block, 
         string memory _unit_floor, 
@@ -53,6 +53,9 @@ contract PropertyContract is ERC721
         string memory _prop_id,
         uint256 _target_price) public returns(uint256){
         //location = _location;
+
+        // only owner of the building can register property
+        require(msg.sender == _owner, "Only owner can register property");
 
         Property memory property = Property(
             _location,
@@ -84,8 +87,9 @@ contract PropertyContract is ERC721
 
         address seller = ownerOf(tokenId);
         _transfer(seller, msg.sender, tokenId);
-        // for sale = false
+        // for sale = false > not for sale
         _property_status_list[tokenId] = false;
+        payable(seller).transfer(msg.value); // send the ETH to seller
     }
 
 
