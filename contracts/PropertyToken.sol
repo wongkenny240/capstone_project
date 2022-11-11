@@ -6,7 +6,8 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 
-contract PropertyContract is ERC721
+
+contract PropertyContract is IERC721Metadata, ERC721 
 {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
@@ -23,10 +24,17 @@ contract PropertyContract is ERC721
     //  dict to store the property status
     mapping(uint => bool) private _property_status_list;
 
+    // dict to map the token id to token URIs
+    mapping(uint256 => string) _tokenURIs;
+
+
     event ContractOwnerShipTransferred(address owner);
 
     enum Status {NotExist, OnSale, Sold}
 
+
+    string _name;
+    string _symbol;
     address _owner;
     uint _target_selling_price;
 
@@ -41,6 +49,8 @@ contract PropertyContract is ERC721
     // initialised the contract, only the owner of the building can initialised the contract
     constructor() ERC721("PropertyTokens", "PT") {
         _owner = msg.sender;
+        _name = "PropertyTokens";
+        _symbol = "PT";
         emit ContractOwnerShipTransferred(_owner);
 
     }
@@ -88,11 +98,6 @@ contract PropertyContract is ERC721
         bool for_sale = true;
         _property_status_list[tokenId] = for_sale;
     }
-
-    function set_image() public {
-
-    }
-
 
 
     function bidProperty(uint tokenId, uint bidPrice) external payable {
