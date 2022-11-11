@@ -3,6 +3,7 @@
 pragma solidity >=0.7.0 <0.9.0;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 
 contract PropertyContract is ERC721
@@ -37,7 +38,7 @@ contract PropertyContract is ERC721
         string prop_id;
     }
 
-    // initialised the contract
+    // initialised the contract, only the owner of the building can initialised the contract
     constructor() ERC721("PropertyTokens", "PT") {
         _owner = msg.sender;
         emit ContractOwnerShipTransferred(_owner);
@@ -76,21 +77,38 @@ contract PropertyContract is ERC721
         return currentItemId;
     }
 
+    // get property location
     function get_property_location(uint tokenId) public view returns(string memory){
         string memory location = _propertylist[tokenId].location;
         return location;
     }
 
+    // set the property for sale
+    function set_for_sale(uint tokenId) public {
+        bool for_sale = true;
+        _property_status_list[tokenId] = for_sale;
+    }
+
+    function set_image() public {
+
+    }
+
+
+
     function bidProperty(uint tokenId, uint bidPrice) external payable {
         require(msg.sender != _ownerlist[tokenId], "Owner cannot buy the property");
         require(bidPrice >= _target_price_list[tokenId], "You bid price is lower than the target selling price");
-
+        require(_property_status_list[tokenId] == true, "Property not for sale at the moment");
         address seller = ownerOf(tokenId);
         _transfer(seller, msg.sender, tokenId);
         // for sale = false > not for sale
         _property_status_list[tokenId] = false;
+        _ownerlist[tokenId] = msg.sender;
         payable(seller).transfer(msg.value); // send the ETH to seller
     }
+
+
+
 
 
     //function registerContract(uint256 _tokenId, string memory _uri) public {
