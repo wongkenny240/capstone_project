@@ -14,7 +14,7 @@ contract PropertyContract is ERC721
     mapping(uint => address) private _ownerlist;
 
     // map the token id to property details
-    mapping(uint => Property[]) private _propertylist;
+    mapping(uint => Property) public _propertylist;
 
     // dict to store the target price of each property
     mapping(uint => uint) private _target_price_list;
@@ -63,7 +63,7 @@ contract PropertyContract is ERC721
         );
 
         uint256 currentItemId = _tokenIds.current();
-        _propertylist[currentItemId].push(property);
+        _propertylist[currentItemId] = property;
         _ownerlist[currentItemId] = msg.sender;
         _target_price_list[currentItemId] = _target_price;
         //for sale = true
@@ -73,8 +73,9 @@ contract PropertyContract is ERC721
         return currentItemId;
     }
 
-    function get_property_location(uint tokenId) public{
-
+    function get_property_location(uint tokenId) public view returns(string memory){
+        string memory location = _propertylist[tokenId].location;
+        return location;
     }
 
     function bidProperty(uint tokenId, uint bidPrice) external payable {
