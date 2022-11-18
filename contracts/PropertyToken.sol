@@ -30,13 +30,26 @@ contract PropertyContract is IERC721Metadata, ERC721
 
     event ContractOwnerShipTransferred(address owner);
 
+    event Start();
+    event End(address winner, uint amount);
+
     enum Status {NotExist, OnSale, Sold}
 
+    //variable for primary market, first issuance of properties
 
     string _name;
     string _symbol;
     address _owner;
     uint _target_selling_price;
+
+
+    // variable for secondary market (english auction)
+    bool public started;
+    bool public ended;
+    uint public endAt;
+    address public highest_bidder;
+    uint public highest_bid;
+
 
     struct Property{
         string location;
@@ -98,6 +111,19 @@ contract PropertyContract is IERC721Metadata, ERC721
         bool for_sale = true;
         _property_status_list[tokenId] = for_sale;
     }
+
+    function start(uint tokenId) external{
+        require(!started, "Auction has been started previously");
+        address owner = ownerOf(tokenId)
+        require (msg.sender == owner , "not property owner");
+        _transfer(msg.sender, address(this), tokenId);
+
+        started = true;
+
+
+
+    }
+
 
     function setTokenURI(uint256 tokenId, string memory URI) public {
         address owner = _ownerlist[tokenId];
