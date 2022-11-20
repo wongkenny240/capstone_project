@@ -31,6 +31,8 @@ contract PropertyContract is IERC721Metadata, ERC721
     event ContractOwnerShipTransferred(address owner);
 
     event Start();
+    event Bid(address indexed sender, uint amount);
+
     event End(address winner, uint amount);
 
     enum Status {NotExist, OnSale, Sold}
@@ -49,6 +51,7 @@ contract PropertyContract is IERC721Metadata, ERC721
     uint public endAt;
     address public highest_bidder;
     uint public highest_bid;
+    mapping(address => uint) public bids;
 
 
     struct Property{
@@ -112,7 +115,7 @@ contract PropertyContract is IERC721Metadata, ERC721
         _property_status_list[tokenId] = for_sale;
     }
 
-    function start(uint tokenId) external{
+    function start(uint tokenId, uint start_bid) external{
         require(!started, "Auction has been started previously");
         address owner = ownerOf(tokenId);
         // check if seller is owner
@@ -120,7 +123,7 @@ contract PropertyContract is IERC721Metadata, ERC721
         _transfer(msg.sender, address(this), tokenId);
         _ownerlist[tokenId] = address(this);
         started = true;
-        highest_bid = 0;
+        highest_bid = start_bid;
 
         emit Start();
 
@@ -129,12 +132,22 @@ contract PropertyContract is IERC721Metadata, ERC721
     function bid() external payable{
         require(started, "not started");
         require(block.timestamp < endAt, "ended");
+        require(msg.value > highest_bid, "bid value smaller than highest bid");
+
+        if (highest_bidder != address(0)){
+            bids[highest_bidder] += highest_bid;
+        }
+        
+        highest_bidder = msg.sender;
+        highest_bid = msg.value;
+
+        emit Bid(msg.sender, msg.value);
 
     }
 
 
     function withdraw() external{
-        
+
 
     }
 
