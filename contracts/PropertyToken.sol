@@ -114,12 +114,32 @@ contract PropertyContract is IERC721Metadata, ERC721
 
     function start(uint tokenId) external{
         require(!started, "Auction has been started previously");
-        address owner = ownerOf(tokenId)
+        address owner = ownerOf(tokenId);
+        // check if seller is owner
         require (msg.sender == owner , "not property owner");
         _transfer(msg.sender, address(this), tokenId);
-
+        _ownerlist[tokenId] = address(this);
         started = true;
+        highest_bid = 0;
 
+        emit Start();
+
+    }
+
+    function bid() external payable{
+        require(started, "not started");
+        require(block.timestamp < endAt, "ended");
+
+    }
+
+
+    function withdraw() external{
+        
+
+    }
+
+
+    function end() external{
 
 
     }
