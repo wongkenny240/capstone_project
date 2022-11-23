@@ -32,7 +32,7 @@ contract PropertyContract is IERC721Metadata, ERC721
 
     event Start();
     event Bid(address indexed sender, uint amount);
-
+    event Withdraw(address indexed bidder, uint amount);
     event End(address winner, uint amount);
 
     enum Status {NotExist, OnSale, Sold}
@@ -147,12 +147,25 @@ contract PropertyContract is IERC721Metadata, ERC721
 
 
     function withdraw() external{
+        uint bal = bids[msg.sender];
+        bids[msg.sender] = 0;
+        payable(msg.sender).transfer(bal);
+
+        emit Withdraw(msg.sender, bal);
+
+    }
+
+    function cancel_auction() external {
 
 
     }
 
 
     function end() external{
+        require(started, "Auction not started");
+        require(!ended, "Auction has already eneded");
+
+        ended = true;
 
 
     }
