@@ -34,6 +34,7 @@ contract PropertyContract is IERC721Metadata, ERC721
     event Bid(address indexed sender, uint amount);
     event Withdraw(address indexed bidder, uint amount);
     event End(address winner, uint amount);
+    event Cancel();
 
     enum Status {NotExist, OnSale, Sold}
 
@@ -110,7 +111,7 @@ contract PropertyContract is IERC721Metadata, ERC721
     }
 
     // set the property for sale
-    function set_for_sale(uint tokenId) public {
+    function _set_for_sale(uint tokenId) public {
         bool for_sale = true;
         _property_status_list[tokenId] = for_sale;
     }
@@ -121,7 +122,8 @@ contract PropertyContract is IERC721Metadata, ERC721
         // check if seller is owner
         require (msg.sender == owner , "not property owner");
         _transfer(msg.sender, address(this), tokenId);
-        _ownerlist[tokenId] = address(this);
+        //_ownerlist[tokenId] = address(this);
+        _set_for_sale(tokenId);
         started = true;
         highest_bid = start_bid;
 
@@ -155,17 +157,30 @@ contract PropertyContract is IERC721Metadata, ERC721
 
     }
 
-    function cancel_auction() external {
+    function cancel_auction(uint tokenId) external {
+        address owner = _ownerlist[tokenId];
+        require(owner == msg.sender, "only owner can cancel auction");
+        _transfer(address(this), msg.sender, tokenId);
+        //_ownerlist[tokenId] = msg.sender;
+        _property_status_list[tokenId] = false;
+        started = false;
 
-
+        emit Cancel();
     }
 
 
-    function end() external{
+    function end(uint tokenId) external{
         require(started, "Auction not started");
         require(!ended, "Auction has already eneded");
 
         ended = true;
+        if (highest_bidder != address(0)){
+            _transfer(address(this), highest_bidder, tokenId);
+            //address payable seller = _ownerlist[tokenId];
+            //seller.transfer(highest_bid);
+        } else {
+
+        }
 
 
     }
