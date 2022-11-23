@@ -64,10 +64,10 @@ contract PropertyContract is IERC721Metadata, ERC721
     }
 
     // initialised the contract, only the owner of the building can initialised the contract
-    constructor() ERC721("PropertyTokens", "PT") {
+    constructor(string memory name_, string memory symbol_) ERC721("Property Token", "PT") {
         _owner = msg.sender;
-        _name = "PropertyTokens";
-        _symbol = "PT";
+        _name = name_;
+        _symbol = symbol_;
         emit ContractOwnerShipTransferred(_owner);
 
     }
