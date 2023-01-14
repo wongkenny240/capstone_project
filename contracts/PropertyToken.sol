@@ -40,15 +40,6 @@ contract PropertyContract is IERC721Metadata, ERC721
     uint _target_selling_price;
 
 
-    // variable for secondary market (english auction)
-    bool public started;
-    bool public ended;
-    uint public endAt;
-    address public highest_bidder;
-    uint public highest_bid;
-    mapping(address => uint) public bids;
-
-
     struct Property{
         string location;
         string unit_block;
