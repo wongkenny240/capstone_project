@@ -18,35 +18,43 @@ contract PropertyAuction{
     bool public started;
     bool public ended;
     uint public endAt;
-    address public highest_bidder;
-    uint public highest_bid;
+
+
+    address payable public seller;
+    address public highestBidder;
+    uint public highestBid;
     mapping(address => uint) public bids;
 
-
     PropertyContract public property_token;
+    //PropertyContract public property_token;
     uint public tokenId;
 
     constructor(
-        address _nft,
-        uint _nftId,
+        address _tokenAddress,
+        uint _tokenId,
         uint _startingBid
-
     ){
-        
+        property_token = PropertyContract(_tokenAddress);
+        tokenId = _tokenId;
+
+        seller = payable(msg.sender);
+        highestBid = _startingBid;
     }
 
 
-
-    function start(uint tokenId, uint start_bid) external{
+    function start() external{
         require(!started, "Auction has been started previously");
-        address owner = ownerOf(tokenId);
+        address owner = property_token.ownerOf(tokenId);
         // check if seller is owner
-        require (msg.sender == owner , "not property owner");
-        _transfer(msg.sender, address(this), tokenId);
+        require (msg.sender == owner , "Cannot sell as not property owner");
+
+        property_token.transferFrom(msg.sender, address(this), tokenId);
+
+        //_transfer(msg.sender, address(this), tokenId);
         //_ownerlist[tokenId] = address(this);
-        _set_for_sale(tokenId);
+        property_token.set_for_sale(tokenId);
         started = true;
-        highest_bid = start_bid;
+        //highestBid = start_bid;
 
         emit Start();
 
@@ -55,14 +63,14 @@ contract PropertyAuction{
     function bid() external payable{
         require(started, "not started");
         require(block.timestamp < endAt, "ended");
-        require(msg.value > highest_bid, "bid value smaller than highest bid");
+        require(msg.value > highestBid, "bid value smaller than highest bid");
 
-        if (highest_bidder != address(0)){
-            bids[highest_bidder] += highest_bid;
+        if (highestBidder != address(0)){
+            bids[highestBidder] += highestBid;
         }
         
-        highest_bidder = msg.sender;
-        highest_bid = msg.value;
+        highestBidder = msg.sender;
+        highestBid = msg.value;
 
         emit Bid(msg.sender, msg.value);
 
@@ -78,32 +86,33 @@ contract PropertyAuction{
 
     }
 
-    function cancel_auction(uint tokenId) external {
-        address owner = _ownerlist[tokenId];
+    function cancel_auction() external {
+        address owner = property_token.getOwner(tokenId);//_ownerlist[tokenId];
         require(owner == msg.sender, "only owner can cancel auction");
-        _transfer(address(this), msg.sender, tokenId);
+        property_token.transferFrom(address(this), msg.sender, tokenId);
         //_ownerlist[tokenId] = msg.sender;
-        _property_status_list[tokenId] = false;
+        property_token.setForSale(tokenId, false);
+        //property_token._property_status_list[tokenId] = false;
         started = false;
 
         emit Cancel();
     }
 
 
-    function end(uint tokenId) external{
+    function end() external{
         require(started, "Auction not started");
         require(!ended, "Auction has already eneded");
 
         ended = true;
-        if (highest_bidder != address(0)){
-            _transfer(address(this), highest_bidder, tokenId);
+        if (highestBidder != address(0)){
+            property_token.safeTransferFrom(address(this), highestBidder, tokenId);
             //address payable seller = _ownerlist[tokenId];
             //seller.transfer(highest_bid);
         } else {
-
+            property_token.safeTransferFrom(address(this), seller, tokenId);
         }
 
-
+        emit End(highestBidder, highestBid);
     }
 
 

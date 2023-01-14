@@ -95,9 +95,30 @@ contract PropertyContract is IERC721Metadata, ERC721
         return location;
     }
 
+
+    // set property for sale or not for sale
+    function setForSale(uint tokenId, bool forSale) public{
+        _property_status_list[tokenId] = forSale;
+    }
+
+    function getOwner(uint tokenId) public view returns(address){
+        return _ownerlist[tokenId]; 
+    }
+
+    function setOwner(uint tokenId, address ownerAddress) public{
+        _ownerlist[tokenId] = ownerAddress;
+    }
+
     // set the property for sale
-    function _set_for_sale(uint tokenId) public {
+    function set_for_sale(uint tokenId) public {
         bool for_sale = true;
+        _property_status_list[tokenId] = for_sale;
+    }
+
+
+    // set not for sale
+    function set_not_for_sale(uint tokenId) public{
+        bool for_sale = false;
         _property_status_list[tokenId] = for_sale;
     }
 
