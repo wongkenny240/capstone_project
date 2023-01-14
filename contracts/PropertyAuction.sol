@@ -6,6 +6,8 @@ import "./PropertyToken.sol";
 
 
 contract PropertyAuction{
+
+    // event for secondary market
     event Start();
     event Bid(address indexed sender, uint amount);
     event Withdraw(address indexed bidder, uint amount);
