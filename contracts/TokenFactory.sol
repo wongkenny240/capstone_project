@@ -26,5 +26,20 @@ contract TokenFactory{
 
     }
 
+    function fundraisers(uint256 limit, uint256 offset)
+    public
+    view
+    returns(PropertyContract[] memory coll)
+    {
+        require(offset <= propTokenCount(), "offset out of bounds");
+        uint256 size = propTokenCount() - offset;
+        size = size < limit ? size : limit;
+        size = size < maxLimit ? size : maxLimit;
+        coll = new PropertyContract[](size);
+        for(uint256 i = 0; i < size; i++) {
+            coll[i] = _propertyToken[offset + i];
+        }
+        return coll;
+    }
 
 }
