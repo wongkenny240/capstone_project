@@ -54,6 +54,8 @@ contract PropertyAuction{
         //_ownerlist[tokenId] = address(this);
         property_token.set_for_sale(tokenId);
         started = true;
+
+        endAt = block.timestamp + 0.5 days;
         //highestBid = start_bid;
 
         emit Start();
@@ -107,7 +109,7 @@ contract PropertyAuction{
         if (highestBidder != address(0)){
             property_token.safeTransferFrom(address(this), highestBidder, tokenId);
             //address payable seller = _ownerlist[tokenId];
-            //seller.transfer(highest_bid);
+            seller.transfer(highestBid);
         } else {
             property_token.safeTransferFrom(address(this), seller, tokenId);
         }
