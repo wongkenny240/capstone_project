@@ -7,10 +7,13 @@ import "./PropertyToken.sol";
 contract TokenFactory{
     PropertyContract[] private _propertyToken;
 
+    uint256 constant maxLimit = 20;
+
+
     event PropertyContractCreated(PropertyContract indexed propContract, address indexed owner);
 
     function propTokenCount() public view returns(uint256){
-        return _propertyToken.length
+        return _propertyToken.length;
     }
 
     function createPropToken(
