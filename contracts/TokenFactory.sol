@@ -9,7 +9,6 @@ contract TokenFactory{
 
     uint256 constant maxLimit = 20;
 
-
     event PropertyContractCreated(PropertyContract indexed propContract, address indexed owner);
 
     function propTokenCount() public view returns(uint256){
@@ -29,7 +28,7 @@ contract TokenFactory{
 
     }
 
-    function fundraisers(uint256 limit, uint256 offset)
+    function propTokens(uint256 limit, uint256 offset)
     public
     view
     returns(PropertyContract[] memory coll)
