@@ -8,7 +8,7 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 
 
-contract PropertyContract is IERC721Metadata, ERC721URIStorage, ERC721 
+contract PropertyContract is IERC721Metadata, ERC721URIStorage 
 {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
@@ -39,8 +39,8 @@ contract PropertyContract is IERC721Metadata, ERC721URIStorage, ERC721
 
 
     struct Property{
-        unint256 tokenId;
-        address payable owner;
+        uint256 tokenId;
+        address owner;
         string location;
         string unit_block;
         string unit_floor;
@@ -79,9 +79,7 @@ contract PropertyContract is IERC721Metadata, ERC721URIStorage, ERC721
 
 
         uint256 currentItemId = _tokenIds.current();
-        _propertylist[currentItemId] = property;
-
-        Property memory property = Property(
+        _propertylist[currentItemId] = Property(
             currentItemId,
             _owner,
             _location,
@@ -123,7 +121,7 @@ contract PropertyContract is IERC721Metadata, ERC721URIStorage, ERC721
     }
 
     function setOwner(uint tokenId, address ownerAddress) public{
-        _propertylist[tokenId].owner = ownerAddress
+        _propertylist[tokenId].owner = ownerAddress;
         //_ownerlist[tokenId] = ownerAddress;
     }
 
@@ -139,19 +137,6 @@ contract PropertyContract is IERC721Metadata, ERC721URIStorage, ERC721
         return _ownerlist[tokenId]; 
     }
 
-
-    function setTokenURI(uint256 tokenId, string memory URI) public {
-        address owner = _ownerlist[tokenId];
-        require(owner != address(0), "ERROR: token id is not valid");
-        _tokenURIs[tokenId] = URI;
-    }
-
-
-    function tokenURI(uint256 tokenId) public view override(ERC721, IERC721Metadata) returns (string memory) {
-        address owner = _ownerlist[tokenId];
-        require(owner != address(0), "ERROR: token id is not valid");
-        return _tokenURIs[tokenId];
-    }
 
 
     function bidProperty(uint tokenId, uint bidPrice) external payable {
@@ -170,17 +155,5 @@ contract PropertyContract is IERC721Metadata, ERC721URIStorage, ERC721
         //_property_status_list[tokenId] = false;
         //_ownerlist[tokenId] = msg.sender;
     }
-
-
-
-
-
-    //function registerContract(uint256 _tokenId, string memory _uri) public {
-    //    _mint(msg.sender, _tokenId);
-    //    _registerProperty()
-        //addContractMetadata(_tokenId, _uri);
-        //emit ContractRegistered(msg.sender, _tokenId);
-    //}
-
 
 }

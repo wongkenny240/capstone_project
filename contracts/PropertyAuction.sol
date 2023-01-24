@@ -105,7 +105,7 @@ contract PropertyAuction{
         ended = true;
         if (highestBidder != address(0)){
             property_token.safeTransferFrom(address(this), highestBidder, tokenId);
-            property_token.setOwner(highestBidder);
+            property_token.setOwner(tokenId, highestBidder);
             //address payable seller = _ownerlist[tokenId];
             seller.transfer(highestBid);
         } else {
