@@ -50,9 +50,7 @@ contract PropertyAuction{
 
         property_token.transferFrom(msg.sender, address(this), tokenId);
 
-        //_transfer(msg.sender, address(this), tokenId);
-        //_ownerlist[tokenId] = address(this);
-        property_token.set_for_sale(tokenId);
+        property_token.setForSale(tokenId, true);
         started = true;
 
         endAt = block.timestamp + 0.5 days;
@@ -92,9 +90,8 @@ contract PropertyAuction{
         address owner = property_token.getOwner(tokenId);//_ownerlist[tokenId];
         require(owner == msg.sender, "only owner can cancel auction");
         property_token.transferFrom(address(this), msg.sender, tokenId);
-        //_ownerlist[tokenId] = msg.sender;
+
         property_token.setForSale(tokenId, false);
-        //property_token._property_status_list[tokenId] = false;
         started = false;
 
         emit Cancel();
@@ -108,6 +105,7 @@ contract PropertyAuction{
         ended = true;
         if (highestBidder != address(0)){
             property_token.safeTransferFrom(address(this), highestBidder, tokenId);
+            property_token.setOwner(highestBidder);
             //address payable seller = _ownerlist[tokenId];
             seller.transfer(highestBid);
         } else {

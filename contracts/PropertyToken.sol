@@ -5,18 +5,16 @@ pragma solidity >=0.7.0 <0.9.0;
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 
 
-contract PropertyContract is IERC721Metadata, ERC721 
+contract PropertyContract is IERC721Metadata, ERC721URIStorage, ERC721 
 {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
 
     // map the token id to an address
     mapping(uint => address) private _ownerlist;
-
-    // map the token id to property details
-    mapping(uint => Property) public _propertylist;
 
     // dict to store the target price of each property
     mapping(uint => uint) private _target_price_list;
@@ -41,12 +39,20 @@ contract PropertyContract is IERC721Metadata, ERC721
 
 
     struct Property{
+        unint256 tokenId;
+        address payable owner;
         string location;
         string unit_block;
         string unit_floor;
         string unit_flat;
         string prop_id;
+        uint256 price;
+        bool for_sale;
     }
+
+    // map the token id to property details
+    mapping(uint => Property) public _propertylist;
+
 
     // initialised the contract, only the owner of the building can initialised the contract
     constructor(address owner_, string memory name_, string memory symbol_) ERC721("Property Token", "PT") {
@@ -64,30 +70,63 @@ contract PropertyContract is IERC721Metadata, ERC721
         string memory _unit_floor, 
         string memory _unit_flat, 
         string memory _prop_id,
-        uint256 _target_price) public returns(uint256){
+        uint256 _target_price,
+        string memory tokenURI) public returns(uint256){
         //location = _location;
 
         // only owner of the building can register property
         require(msg.sender == _owner, "Only owner can register property");
 
+
+        uint256 currentItemId = _tokenIds.current();
+        _propertylist[currentItemId] = property;
+
         Property memory property = Property(
+            currentItemId,
+            _owner,
             _location,
             _unit_block,
             _unit_floor,
             _unit_flat,
-            _prop_id
+            _prop_id,
+            _target_price,
+            true
         );
 
-        uint256 currentItemId = _tokenIds.current();
-        _propertylist[currentItemId] = property;
-        _ownerlist[currentItemId] = msg.sender;
-        _target_price_list[currentItemId] = _target_price;
+        //_ownerlist[currentItemId] = msg.sender;
+        //_target_price_list[currentItemId] = _target_price;
         //for sale = true
-        _property_status_list[currentItemId] = true;
+        //_property_status_list[currentItemId] = true;
         _mint(msg.sender, currentItemId);
+
+        _setTokenURI(currentItemId, tokenURI);
+
         _tokenIds.increment();
         return currentItemId;
     }
+
+    // function to get all listed property
+
+
+
+
+    // function to get all my property
+
+    
+
+
+
+    // set property for sale or not for sale
+    function setForSale(uint tokenId, bool forSale) public{
+        _propertylist[tokenId].for_sale = forSale;
+        //_property_status_list[tokenId] = forSale;
+    }
+
+    function setOwner(uint tokenId, address ownerAddress) public{
+        _propertylist[tokenId].owner = ownerAddress
+        //_ownerlist[tokenId] = ownerAddress;
+    }
+
 
     // get property location
     function get_property_location(uint tokenId) public view returns(string memory){
@@ -96,30 +135,8 @@ contract PropertyContract is IERC721Metadata, ERC721
     }
 
 
-    // set property for sale or not for sale
-    function setForSale(uint tokenId, bool forSale) public{
-        _property_status_list[tokenId] = forSale;
-    }
-
     function getOwner(uint tokenId) public view returns(address){
         return _ownerlist[tokenId]; 
-    }
-
-    function setOwner(uint tokenId, address ownerAddress) public{
-        _ownerlist[tokenId] = ownerAddress;
-    }
-
-    // set the property for sale
-    function set_for_sale(uint tokenId) public {
-        bool for_sale = true;
-        _property_status_list[tokenId] = for_sale;
-    }
-
-
-    // set not for sale
-    function set_not_for_sale(uint tokenId) public{
-        bool for_sale = false;
-        _property_status_list[tokenId] = for_sale;
     }
 
 
@@ -138,15 +155,20 @@ contract PropertyContract is IERC721Metadata, ERC721
 
 
     function bidProperty(uint tokenId, uint bidPrice) external payable {
-        require(msg.sender != _ownerlist[tokenId], "Owner cannot buy the property");
-        require(bidPrice >= _target_price_list[tokenId], "You bid price is lower than the target selling price");
-        require(_property_status_list[tokenId] == true, "Property not for sale at the moment");
+        require(msg.sender != _propertylist[tokenId].owner, "Owner cannot buy the property");
+        require(bidPrice >= _propertylist[tokenId].price,"You bid price is lower than the target selling price");
+        require(_propertylist[tokenId].for_sale == true, "Property not for sale at the moment");
+        //require(msg.sender != _ownerlist[tokenId], "Owner cannot buy the property");
+        //require(bidPrice >= _target_price_list[tokenId], "You bid price is lower than the target selling price");
+        //require(_property_status_list[tokenId] == true, "Property not for sale at the moment");
         address seller = ownerOf(tokenId);
         _transfer(seller, msg.sender, tokenId);
-        // for sale = false > not for sale
-        _property_status_list[tokenId] = false;
-        _ownerlist[tokenId] = msg.sender;
         payable(seller).transfer(msg.value); // send the ETH to seller
+        // for sale = false > not for sale
+        _propertylist[tokenId].for_sale = false;
+        _propertylist[tokenId].owner = msg.sender;        
+        //_property_status_list[tokenId] = false;
+        //_ownerlist[tokenId] = msg.sender;
     }
 
 
