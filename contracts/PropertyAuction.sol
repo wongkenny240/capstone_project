@@ -44,10 +44,12 @@ contract PropertyAuction{
 
     function start() external{
         require(!started, "Auction has been started previously");
-        address owner = property_token.ownerOf(tokenId);
+        address owner = property_token.getOwner(tokenId); //property_token.ownerOf(tokenId);
         // check if seller is owner
         require (msg.sender == owner , "Cannot sell as not property owner");
+        // check if it's primary market or secondary market
 
+        
         property_token.transferFrom(msg.sender, address(this), tokenId);
 
         property_token.setForSale(tokenId, true);

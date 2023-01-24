@@ -48,6 +48,7 @@ contract PropertyContract is IERC721Metadata, ERC721URIStorage
         string prop_id;
         uint256 price;
         bool for_sale;
+        bool primary_mkt;
     }
 
     // map the token id to property details
@@ -88,6 +89,7 @@ contract PropertyContract is IERC721Metadata, ERC721URIStorage
             _unit_flat,
             _prop_id,
             _target_price,
+            true,
             true
         );
 
@@ -134,7 +136,8 @@ contract PropertyContract is IERC721Metadata, ERC721URIStorage
 
 
     function getOwner(uint tokenId) public view returns(address){
-        return _ownerlist[tokenId]; 
+        return _propertylist[tokenId].owner;
+        //return _ownerlist[tokenId]; 
     }
 
 
