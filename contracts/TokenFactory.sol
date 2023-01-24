@@ -25,6 +25,7 @@ contract TokenFactory{
             symbol
         );
         _propertyToken.push(propContract);
+        emit PropertyContractCreated(propContract, msg.sender);
 
     }
 
