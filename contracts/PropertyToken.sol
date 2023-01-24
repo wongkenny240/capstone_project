@@ -14,17 +14,16 @@ contract PropertyContract is IERC721Metadata, ERC721URIStorage
     Counters.Counter private _tokenIds;
 
     // map the token id to an address
-    mapping(uint => address) private _ownerlist;
+    //mapping(uint => address) private _ownerlist;
 
     // dict to store the target price of each property
-    mapping(uint => uint) private _target_price_list;
+    //mapping(uint => uint) private _target_price_list;
 
     //  dict to store the property status
-    mapping(uint => bool) private _property_status_list;
+    //mapping(uint => bool) private _property_status_list;
 
     // dict to map the token id to token URIs
     mapping(uint256 => string) _tokenURIs;
-
 
     event ContractOwnerShipTransferred(address owner);
 
@@ -105,13 +104,28 @@ contract PropertyContract is IERC721Metadata, ERC721URIStorage
         return currentItemId;
     }
 
-    // function to get all listed property
+    // function to get all listed property (i.e. property token)
+    function getAllProps() public view returns (Property[] memory){
+        uint256 propCount = _tokenIds.current();
+        Property[] memory propTokens = new Property[](propCount);
+        uint currentIndex = 0;
+        uint currentItemId;
 
+        for (uint i = 0; i < propCount; i++){
+            currentItemId = i;
+            Property storage currentItem = _propertylist[currentItemId];
+            propTokens[currentIndex] = currentItem;
+            currentIndex +=1;
+        }
 
-
+        return propTokens;
+    }    
 
     // function to get all my property
+    function getMyProps() public view returns(Property[] memory){
+        
 
+    }
     
 
 
@@ -125,6 +139,11 @@ contract PropertyContract is IERC721Metadata, ERC721URIStorage
     function setOwner(uint tokenId, address ownerAddress) public{
         _propertylist[tokenId].owner = ownerAddress;
         //_ownerlist[tokenId] = ownerAddress;
+    }
+
+    // function to set the primary market flag to false
+    function setSecondary(uint tokenId) public {
+        _propertylist[tokenId].primary_mkt = false;
     }
 
 
@@ -154,7 +173,8 @@ contract PropertyContract is IERC721Metadata, ERC721URIStorage
         payable(seller).transfer(msg.value); // send the ETH to seller
         // for sale = false > not for sale
         _propertylist[tokenId].for_sale = false;
-        _propertylist[tokenId].owner = msg.sender;        
+        _propertylist[tokenId].owner = msg.sender;
+        _propertylist[tokenId].primary_mkt = false;        
         //_property_status_list[tokenId] = false;
         //_ownerlist[tokenId] = msg.sender;
     }

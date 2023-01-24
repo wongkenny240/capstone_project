@@ -1,0 +1,1 @@
+{"version":"0.1.0","name":"client","dependencies":{"bindings":{"version":"1.5.0"},"file-uri-to-path":{"version":"1.0.0"},"nan":{"version":"2.17.0"},"react-dom":{"version":"17.0.2"},"react-scripts":{"version":"3.2.0"},"react":{"version":"17.0.2"},"web3":{"version":"1.8.1"}}}

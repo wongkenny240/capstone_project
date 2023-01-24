@@ -45,4 +45,8 @@ contract TokenFactory{
         return coll;
     }
 
+    // function to get all property token
+
+    
+
 }
