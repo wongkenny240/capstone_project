@@ -66,20 +66,20 @@ function App() {
         <div>
 
             <AppBar position="static" color="default" style={{ margin: 0 }}>
-              <Toolbar>
-               <Typography variant="h6" color="inherit">
-                 <NavLink className="nav-link" to="/">Home</NavLink>
-               </Typography>
-               <NavLink className="nav-link" to="/new/">New</NavLink>
-              </Toolbar>
-           </AppBar>
+                <Toolbar>
+                    <Typography variant="h6" color="inherit">
+                        <NavLink className="nav-link" to="/">Home</NavLink>
+                        <NavLink className="nav-link" to="/new/">New Building</NavLink>
+                    </Typography>
+                </Toolbar>
+            </AppBar>
 
-           <Routes>    
-            <Route path="/" exact element={<Home />} />
-            <Route path="/new/" element={<NewBuilding />} />
-          </Routes>
+            <Routes>
+                <Route path="/" exact element={<Home />} />
+                <Route path="/new/" element={<NewBuilding />} />
+            </Routes>
         </div>
-      )
+    )
 }
 
 export default App;
