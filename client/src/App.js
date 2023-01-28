@@ -1,8 +1,11 @@
-import { BrowserRouter as Router, Route, NavLink } from "react-router-dom";
+import { BrowserRouter as Router, Route, Link, NavLink } from "react-router-dom";
 import Home from "./components/Home";
 import NewBuilding from "./components/NewBuilding";
 import React, { Component } from "react";
 import Web3 from 'web3';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
 import "./App.css";
 import { useEffect, useState } from 'react';
 
@@ -60,23 +63,22 @@ function App() {
     }, [])
 
     return (
-        <Router>
-            <div>
-                <nav>
-                    <ul>
-                        <li>
-                            <NavLink to="/">Home</NavLink>
-                        </li>
-                        <li>
-                            <NavLink to="/new/">New</NavLink>
-                        </li>
-                    </ul>
-                </nav>
-                <Route path="/" exact component={Home} />
-                <Route path="/new/" component={NewBuilding} />
-            </div>
-        </Router>
-    )
+        <div>
+          <Router>
+            <AppBar position="static" color="default" style={{ margin: 0 }}>
+              <Toolbar>
+               <Typography variant="h6" color="inherit">
+                 <NavLink className="nav-link" to="/">Home</NavLink>
+               </Typography>
+               <NavLink className="nav-link" to="/new/">New</NavLink>
+              </Toolbar>
+           </AppBar>
+    
+            <Route path="/" exact component={Home} />
+            <Route path="/new/" component={NewBuilding} />
+          </Router>
+        </div>
+      )
 }
 
 export default App;

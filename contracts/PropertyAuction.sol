@@ -33,7 +33,7 @@ contract PropertyAuction{
         address _tokenAddress,
         uint _tokenId,
         uint _startingBid
-    ){
+    ){ 
         property_token = PropertyContract(_tokenAddress);
         tokenId = _tokenId;
 
