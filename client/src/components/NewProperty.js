@@ -10,11 +10,11 @@ const NewProperty = () => {
     return (
         <div className="form-submit"><h2>Create a New Building</h2>
         <TextField id="outlined-basic" margin="normal" label="Location" variant="outlined" />
-        <TextField id="outlined-basic" margin="normal" label="Symbol" variant="outlined" />
-        <TextField id="outlined-basic" margin="normal" label="Location" variant="outlined" />
-        <TextField id="outlined-basic" margin="normal" label="Symbol" variant="outlined" />
-        <TextField id="outlined-basic" margin="normal" label="Location" variant="outlined" />
-        <TextField id="outlined-basic" margin="normal" label="Symbol" variant="outlined" />
+        <TextField id="outlined-basic" margin="normal" label="Block" variant="outlined" />
+        <TextField id="outlined-basic" margin="normal" label="Floor" variant="outlined" />
+        <TextField id="outlined-basic" margin="normal" label="Flat" variant="outlined" />
+        <TextField id="outlined-basic" margin="normal" label="Property ID" variant="outlined" />
+        <TextField id="outlined-basic" margin="normal" label="Price" variant="outlined" />
 
         <Button variant="contained">Submit</Button>
         </div>

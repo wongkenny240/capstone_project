@@ -8,7 +8,7 @@ const NewBuilding = () => {
     useEffect(() => {
     }, []);
     return (
-        <div className="form-submit"><h2>Create a New Building</h2>
+        <div className="form-submit"><h2>Create a New Property</h2>
         <TextField id="outlined-basic" margin="normal" label="Building" variant="outlined" />
         <TextField id="outlined-basic" margin="normal" label="Symbol" variant="outlined" />
         <Button variant="contained">Submit</Button>
