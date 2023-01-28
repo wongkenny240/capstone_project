@@ -2,6 +2,7 @@ import { Routes, Route, Link, NavLink } from "react-router-dom";
 import Home from "./components/Home";
 import NewBuilding from "./components/NewBuilding";
 import NewProperty from "./components/NewProperty";
+import PropertyMarketplace from "./components/PropertyMarketplace";
 import React, { Component } from "react";
 import Web3 from 'web3';
 import AppBar from '@material-ui/core/AppBar';
@@ -72,6 +73,7 @@ function App() {
                         <NavLink className="nav-link" to="/">Home</NavLink>
                         <NavLink className="nav-link" to="/new/">New Building</NavLink>
                         <NavLink className="nav-link" to="/newprop/">New Property</NavLink>
+                        <NavLink className="nav-link" to="/propmarket/">Property Marketplace</NavLink>
                     </Typography>
                 </Toolbar>
             </AppBar>
@@ -80,6 +82,7 @@ function App() {
                 <Route path="/" exact element={<Home />} />
                 <Route path="/new/" element={<NewBuilding />} />
                 <Route path="/newprop/" element={<NewProperty />} />
+                <Route path="/propmarket/" element={<PropertyMarketplace />} />
             </Routes>
         </div>
     )
