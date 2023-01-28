@@ -29,6 +29,7 @@ contract PropertyAuction{
     //PropertyContract public property_token;
     uint public tokenId;
 
+
     constructor(
         address _tokenAddress,
         uint _tokenId,

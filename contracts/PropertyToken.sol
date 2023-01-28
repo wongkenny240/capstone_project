@@ -179,4 +179,111 @@ contract PropertyContract is IERC721Metadata, ERC721URIStorage
         //_ownerlist[tokenId] = msg.sender;
     }
 
+    // event for secondary market
+    event Start();
+    event Bid(address indexed sender, uint amount);
+    event Withdraw(address indexed bidder, uint amount);
+    event End(address winner, uint amount);
+    event Cancel();
+
+    // variable for secondary market (english auction)
+    bool public started;
+    bool public ended;
+    uint public endAt;
+
+
+    address payable public seller;
+    address public highestBidder;
+    uint public highestBid;
+    mapping(address => uint) public bids;
+
+    PropertyContract public property_token;
+    //PropertyContract public property_token;
+    //uint public tokenId;
+
+
+    function start(uint token_id, uint startBid) external{
+        require(!started, "Auction has been started previously");
+        address owner = _propertylist[token_id].owner; //property_token.ownerOf(tokenId);
+        // check if seller is owner
+        require (msg.sender == owner , "Cannot sell as not property owner");
+        // check if it's primary market or secondary market
+
+        
+        transferFrom(msg.sender, address(this), token_id);
+
+        setForSale(token_id, true);
+        started = true;
+
+        endAt = block.timestamp + 0.5 days;
+
+        seller = payable(msg.sender);
+        highestBid = startBid;
+
+        emit Start();
+
+    }
+
+    function bid(uint bidPrice) external payable{
+        require(started, "not started");
+        require(block.timestamp < endAt, "ended");
+        require(bidPrice > highestBid, "bid value smaller than highest bid");
+        //require(msg.value > highestBid, "bid value smaller than highest bid");
+
+        if (highestBidder != address(0)){
+            bids[highestBidder] += highestBid;
+        }
+
+        highestBidder = msg.sender;
+        highestBid = bidPrice;
+        //highestBid = msg.value;
+
+        //emit Bid(msg.sender, msg.value);
+        emit Bid(msg.sender, bidPrice);
+    }
+
+
+    function withdraw() external{
+        uint bal = bids[msg.sender];
+        bids[msg.sender] = 0;
+        payable(msg.sender).transfer(bal);
+
+        emit Withdraw(msg.sender, bal);
+
+    }
+
+    function cancel_auction() external {
+        address owner = _propertylist[token_id].owner;//_ownerlist[tokenId];
+        require(owner == msg.sender, "only owner can cancel auction");
+        transferFrom(address(this), msg.sender, token_id);
+
+        property_token.setForSale(token_id, false);
+        started = false;
+
+        emit Cancel();
+    }
+
+
+    function end() external{
+        require(started, "Auction not started");
+        require(!ended, "Auction has already eneded");
+
+        ended = true;
+        if (highestBidder != address(0)){
+            safeTransferFrom(address(this), highestBidder, token_id);
+            _propertylist[token_id].owner = highestBidder;
+            //setOwner(tokenId, highestBidder);
+            //address payable seller = _ownerlist[tokenId];
+            seller.transfer(highestBid);
+        } else {
+            safeTransferFrom(address(this), seller, token_id);
+        }
+
+        emit End(highestBidder, highestBid);
+    }
+
+
+
+
+
 }
