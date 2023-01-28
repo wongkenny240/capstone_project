@@ -2,9 +2,10 @@
   "dependencies": {
     "@openzeppelin/contracts": "^4.8.1",
     "web3uikit": "^1.0.4"
-    },
+  },
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^2.0.1",
+    "@nomiclabs/hardhat-ganache": "^2.0.1",
     "hardhat": "^2.12.6"
   }
 }
