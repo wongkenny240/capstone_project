@@ -182,60 +182,117 @@ contract PropertyContract is IERC721Metadata, ERC721URIStorage
     // event for secondary market
     event Start();
     event Bid(address indexed sender, uint amount);
-    event Withdraw(address indexed bidder, uint amount);
+    event Withdraw(address indexed sender, uint auctionId);
     event End(address winner, uint amount);
     event Cancel();
 
     // variable for secondary market (english auction)
-    bool public started;
-    bool public ended;
-    uint public endAt;
+    //bool public started;
+    //bool public ended;
+    //uint public endAt;
 
 
-    address payable public seller;
-    address public highestBidder;
-    uint public highestBid;
-    mapping(address => uint) public bids;
+    address payable public auction_seller;
+    //address public highestBidder;
+    //uint public highestBid;
 
-    PropertyContract public property_token;
+    Counters.Counter private _auctionIds;
+
+
+    struct Auction{
+        uint256 auctionTokenId; 
+        uint256 highestBid;
+        address highestBidder;
+        address seller;
+        bool started;
+        bool ended;
+        Property auctionProperty;
+    }
+
+    //mapping(address => uint) public bids;
+    mapping(uint => Auction) public _auctions;
+    //mapping(address => uint) public bids;
+
+
+    //PropertyContract public property_token;
     //PropertyContract public property_token;
     //uint public tokenId;
 
-
-    function start(uint token_id, uint startBid) external{
-        require(!started, "Auction has been started previously");
-        address owner = _propertylist[token_id].owner; //property_token.ownerOf(tokenId);
-        // check if seller is owner
+    function start(uint auctionTokenId, uint startBid) external{
+        //primary market = false and for sale = false
+           
+        bool primaryMkt = _propertylist[auctionTokenId].primary_mkt;
+        bool forSale = _propertylist[auctionTokenId].for_sale;
+        require(!primaryMkt && !forSale, "Property cannot be auctioned");
+        address owner = _propertylist[auctionTokenId].owner;
         require (msg.sender == owner , "Cannot sell as not property owner");
-        // check if it's primary market or secondary market
 
-        
-        transferFrom(msg.sender, address(this), token_id);
+        // create Auction
+        uint256 currentAuctionItemId = _auctionIds.current();
+        _auctions[currentAuctionItemId] = Auction(
+            auctionTokenId,
+            startBid,
+            msg.sender,
+            owner,
+            true,
+            false,
+            _propertylist[auctionTokenId]
+        );
 
-        setForSale(token_id, true);
-        started = true;
+        transferFrom(msg.sender, address(this), auctionTokenId);             
 
-        endAt = block.timestamp + 0.5 days;
+        _propertylist[auctionTokenId].for_sale = true;
 
-        seller = payable(msg.sender);
-        highestBid = startBid;
-
-        emit Start();
 
     }
 
-    function bid(uint bidPrice) external payable{
+
+    // function to end the auction
+    function end(uint auctionId) external{
+
+        bool started = _auctions[auctionId].started;
+        address payable seller = payable(_auctions[auctionId].seller);
+        address highestBidder = _auctions[auctionId].highestBidder;
+        uint highestBid = _auctions[auctionId].highestBid;
+
+        require(started, "Auction not started");
+        require(msg.sender == seller, "Only seller can close the auction");
+        uint token_id = _auctions[auctionId].auctionTokenId;
+
+        if (highestBidder != seller ){
+            safeTransferFrom(address(this), highestBidder, token_id);
+            _propertylist[token_id].owner = highestBidder;
+            _propertylist[token_id].for_sale = false;
+            //setOwner(tokenId, highestBidder);
+            //address payable seller = _ownerlist[tokenId];
+            seller.transfer(highestBid);
+        }else{
+            safeTransferFrom(address(this), seller, token_id);
+        }
+
+        emit End(highestBidder, highestBid);
+
+
+    }
+
+
+
+    function bid(uint bidPrice, uint auctionId) external payable{
+
+        bool started = _auctions[auctionId].started;
+        bool ended = _auctions[auctionId].ended;
+        uint highestBid = _auctions[auctionId].highestBid;
+
         require(started, "not started");
-        require(block.timestamp < endAt, "ended");
+        require(!ended, "ended");
+        //require(block.timestamp < endAt, "ended");
         require(bidPrice > highestBid, "bid value smaller than highest bid");
         //require(msg.value > highestBid, "bid value smaller than highest bid");
 
-        if (highestBidder != address(0)){
-            bids[highestBidder] += highestBid;
-        }
+        // update highest bid if bid price larger than highest bid
+        _auctions[auctionId].highestBid = bidPrice;
+        _auctions[auctionId].highestBidder = msg.sender;
 
-        highestBidder = msg.sender;
-        highestBid = bidPrice;
         //highestBid = msg.value;
 
         //emit Bid(msg.sender, msg.value);
@@ -243,46 +300,17 @@ contract PropertyContract is IERC721Metadata, ERC721URIStorage
     }
 
 
-    function withdraw() external{
-        uint bal = bids[msg.sender];
-        bids[msg.sender] = 0;
-        payable(msg.sender).transfer(bal);
+    function withdraw(uint auctionId) external{
+        address seller = _auctions[auctionId].seller;
+        uint token_id = _auctions[auctionId].auctionTokenId;
 
-        emit Withdraw(msg.sender, bal);
+        require(msg.sender == seller, "Only seller can withdraw auction");        
+        _auctions[auctionId].ended = true;
+        _propertylist[token_id].for_sale = false;
+
+        emit Withdraw(msg.sender, auctionId);
 
     }
-
-    function cancel_auction() external {
-        address owner = _propertylist[token_id].owner;//_ownerlist[tokenId];
-        require(owner == msg.sender, "only owner can cancel auction");
-        transferFrom(address(this), msg.sender, token_id);
-
-        property_token.setForSale(token_id, false);
-        started = false;
-
-        emit Cancel();
-    }
-
-
-    function end() external{
-        require(started, "Auction not started");
-        require(!ended, "Auction has already eneded");
-
-        ended = true;
-        if (highestBidder != address(0)){
-            safeTransferFrom(address(this), highestBidder, token_id);
-            _propertylist[token_id].owner = highestBidder;
-            //setOwner(tokenId, highestBidder);
-            //address payable seller = _ownerlist[tokenId];
-            seller.transfer(highestBid);
-        } else {
-            safeTransferFrom(address(this), seller, token_id);
-        }
-
-        emit End(highestBidder, highestBid);
-    }
-
-
 
 
 

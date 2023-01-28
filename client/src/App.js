@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Route, Link, NavLink } from "react-router-dom";
+import { Routes, Route, Link, NavLink } from "react-router-dom";
 import Home from "./components/Home";
 import NewBuilding from "./components/NewBuilding";
 import React, { Component } from "react";
@@ -64,7 +64,7 @@ function App() {
 
     return (
         <div>
-          <Router>
+
             <AppBar position="static" color="default" style={{ margin: 0 }}>
               <Toolbar>
                <Typography variant="h6" color="inherit">
@@ -73,10 +73,11 @@ function App() {
                <NavLink className="nav-link" to="/new/">New</NavLink>
               </Toolbar>
            </AppBar>
-    
-            <Route path="/" exact component={Home} />
-            <Route path="/new/" component={NewBuilding} />
-          </Router>
+
+           <Routes>    
+            <Route path="/" exact element={<Home />} />
+            <Route path="/new/" element={<NewBuilding />} />
+          </Routes>
         </div>
       )
 }
