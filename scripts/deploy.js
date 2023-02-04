@@ -7,13 +7,13 @@
 const hre = require("hardhat");
 
 async function main() {
-  const TokenFactory = await hre.ethers.getContractFactory("TokenFactory");
-  const tokenfactory = await TokenFactory.deploy();
+  const PropertyToken = await hre.ethers.getContractFactory("PropertyToken");
+  const propertytoken = await PropertyToken.deploy();
 
-  await tokenfactory.deployed();
+  await propertytoken.deployed();
 
   console.log(
-    `token factory deployed to ${tokenfactory.address}`
+    `token factory deployed to ${propertytoken.address}`
   );
 }
 

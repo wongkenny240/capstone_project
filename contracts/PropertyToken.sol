@@ -8,7 +8,7 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 
 
-contract PropertyContract is IERC721Metadata, ERC721URIStorage 
+contract PropertyToken is IERC721Metadata, ERC721URIStorage 
 {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
@@ -47,10 +47,11 @@ contract PropertyContract is IERC721Metadata, ERC721URIStorage
 
 
     // initialised the contract, only the owner of the building can initialised the contract
-    constructor(address owner_, string memory name_, string memory symbol_) ERC721("Property Token", "PT") {
-        _owner = owner_;
-        _name = name_;
-        _symbol = symbol_;
+    constructor() ERC721("PropertyToken", "PTT") {
+        //address owner_, string memory name_, string memory symbol_
+        _owner = msg.sender; //owner_;
+        //_name = name_;
+        //_symbol = symbol_;
         emit ContractOwnerShipTransferred(_owner);
 
     }
