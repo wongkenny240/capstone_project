@@ -16,27 +16,53 @@ const [floor, setFloor] = useState(null)
 const [flat, setFlat] = useState(null)
 const [prop_id, setPropID] = useState(null)
 const [price, setPrice] = useState(null)
+const [contract, setContract] = useState(null)
+const [ addr, setAddress ] = useState(null)
+
 
 const NewProperty = () => {
+    useEffect(() => {
+        const init = async() => {
+            try {
+                
+                
+                const ethers = require("ethers");
+                // A Web3Provider wraps a standard Web3 provider, which is
+                // what MetaMask injects as window.ethereum into each page
+                const provider = new ethers.providers.Web3Provider(window.ethereum)
+        
+                // MetaMask requires requesting permission to connect users accounts
+                await provider.send("eth_requestAccounts", []);
+        
+                // The MetaMask plugin also allows signing transactions to
+                // send ether and pay to change state within the blockchain.
+                // For this, you need the account signer...
+                const signer = provider.getSigner()
+        
+                const addr = await signer.getAddress();
 
-    async function registerProperty(){
-        const ethers = require("ethers");
-        // A Web3Provider wraps a standard Web3 provider, which is
-        // what MetaMask injects as window.ethereum into each page
-        const provider = new ethers.providers.Web3Provider(window.ethereum)
+                //Pull the deployed contract instance
+                let contract = new ethers.Contract(contractAddress.PropertyToken, PTArtifact.abi, signer)
 
-        // MetaMask requires requesting permission to connect users accounts
-        await provider.send("eth_requestAccounts", []);
+                setContract(contract)
+                setAddress(addr)
 
-        // The MetaMask plugin also allows signing transactions to
-        // send ether and pay to change state within the blockchain.
-        // For this, you need the account signer...
-        const signer = provider.getSigner()
 
-        const addr = await signer.getAddress();
+              } catch(error) {
+                alert(
+                  `Failed to load web3, accounts, or contract. Check console for details.`,
+                );
+                console.error(error);
+              }
 
-        //Pull the deployed contract instance
-        let contract = new ethers.Contract(contractAddress.PropertyToken, PTArtifact.abi, signer)
+
+
+
+        }
+
+    }, []);
+
+    const registerProperty = async () =>{
         
         const transaction = await contract.registerProperty(
             buildName,

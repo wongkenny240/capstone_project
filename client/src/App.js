@@ -78,7 +78,7 @@ function App() {
             </AppBar>
 
             <Routes>
-                <Route path="/" exact element={<Home />} />
+                <Route path="/" element={<Home />} />
                 <Route path="/newprop/" element={<NewProperty />} />
                 <Route path="/propmarket/" element={<PropertyMarketplace />} />
             </Routes>
