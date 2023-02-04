@@ -4,7 +4,8 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import Web3 from "web3";
 import getWeb3 from "../getWeb3";
-import PropertyToken from "../../contracts/PropertyToken.json";
+import contractAddress  from "../contracts/contract-address.json";
+import PTArtifact from "../contracts/PropertyToken.json"
 import { ethers } from "ethers";
 
 
@@ -35,7 +36,7 @@ const NewProperty = () => {
         const addr = await signer.getAddress();
 
         //Pull the deployed contract instance
-        let contract = new ethers.Contract(PropertyToken.address, PropertyToken.abi, signer)
+        let contract = new ethers.Contract(contractAddress.PropertyToken, PTArtifact.abi, signer)
         
         const transaction = await contract.registerProperty(
             buildName,
