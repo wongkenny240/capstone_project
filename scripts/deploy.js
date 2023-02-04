@@ -39,7 +39,7 @@ function saveFrontendFiles(pt) {
   }
   fs.writeFileSync(
     contractsDir + "/contract-address.json",
-    JSON.stringify({ PropertyToken: pt.address }, null, 2)
+    JSON.stringify({ "address": pt.address }, null, 2)
   );
   // `artifacts` is a helper property provided by Hardhat to read artifacts
   const PTArtifact = artifacts.readArtifactSync("PropertyToken");
