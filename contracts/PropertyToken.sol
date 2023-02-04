@@ -13,15 +13,6 @@ contract PropertyContract is IERC721Metadata, ERC721URIStorage
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
 
-    // map the token id to an address
-    //mapping(uint => address) private _ownerlist;
-
-    // dict to store the target price of each property
-    //mapping(uint => uint) private _target_price_list;
-
-    //  dict to store the property status
-    //mapping(uint => bool) private _property_status_list;
-
     // dict to map the token id to token URIs
     mapping(uint256 => string) _tokenURIs;
 
@@ -65,6 +56,7 @@ contract PropertyContract is IERC721Metadata, ERC721URIStorage
 
     // function to register property
     function registerProperty(
+        string memory _building,
         string memory _location, 
         string memory _unit_block, 
         string memory _unit_floor, 
@@ -80,7 +72,7 @@ contract PropertyContract is IERC721Metadata, ERC721URIStorage
 
         uint256 currentItemId = _tokenIds.current();
         _propertylist[currentItemId] = Property(
-            currentItemId,
+            _building,
             _owner,
             _location,
             _unit_block,
@@ -92,10 +84,6 @@ contract PropertyContract is IERC721Metadata, ERC721URIStorage
             true
         );
 
-        //_ownerlist[currentItemId] = msg.sender;
-        //_target_price_list[currentItemId] = _target_price;
-        //for sale = true
-        //_property_status_list[currentItemId] = true;
         _mint(msg.sender, currentItemId);
 
         _setTokenURI(currentItemId, tokenURI);
@@ -165,9 +153,6 @@ contract PropertyContract is IERC721Metadata, ERC721URIStorage
         require(msg.sender != _propertylist[tokenId].owner, "Owner cannot buy the property");
         require(bidPrice >= _propertylist[tokenId].price,"You bid price is lower than the target selling price");
         require(_propertylist[tokenId].for_sale == true, "Property not for sale at the moment");
-        //require(msg.sender != _ownerlist[tokenId], "Owner cannot buy the property");
-        //require(bidPrice >= _target_price_list[tokenId], "You bid price is lower than the target selling price");
-        //require(_property_status_list[tokenId] == true, "Property not for sale at the moment");
         address seller = ownerOf(tokenId);
         _transfer(seller, msg.sender, tokenId);
         payable(seller).transfer(msg.value); // send the ETH to seller
@@ -175,8 +160,6 @@ contract PropertyContract is IERC721Metadata, ERC721URIStorage
         _propertylist[tokenId].for_sale = false;
         _propertylist[tokenId].owner = msg.sender;
         _propertylist[tokenId].primary_mkt = false;        
-        //_property_status_list[tokenId] = false;
-        //_ownerlist[tokenId] = msg.sender;
     }
 
     // event for secondary market
@@ -186,15 +169,7 @@ contract PropertyContract is IERC721Metadata, ERC721URIStorage
     event End(address winner, uint amount);
     event Cancel();
 
-    // variable for secondary market (english auction)
-    //bool public started;
-    //bool public ended;
-    //uint public endAt;
-
-
     address payable public auction_seller;
-    //address public highestBidder;
-    //uint public highestBid;
 
     Counters.Counter private _auctionIds;
 
@@ -209,14 +184,7 @@ contract PropertyContract is IERC721Metadata, ERC721URIStorage
         Property auctionProperty;
     }
 
-    //mapping(address => uint) public bids;
     mapping(uint => Auction) public _auctions;
-    //mapping(address => uint) public bids;
-
-
-    //PropertyContract public property_token;
-    //PropertyContract public property_token;
-    //uint public tokenId;
 
     function start(uint auctionTokenId, uint startBid) external{
         //primary market = false and for sale = false
@@ -263,8 +231,6 @@ contract PropertyContract is IERC721Metadata, ERC721URIStorage
             safeTransferFrom(address(this), highestBidder, token_id);
             _propertylist[token_id].owner = highestBidder;
             _propertylist[token_id].for_sale = false;
-            //setOwner(tokenId, highestBidder);
-            //address payable seller = _ownerlist[tokenId];
             seller.transfer(highestBid);
         }else{
             safeTransferFrom(address(this), seller, token_id);
@@ -293,9 +259,6 @@ contract PropertyContract is IERC721Metadata, ERC721URIStorage
         _auctions[auctionId].highestBid = bidPrice;
         _auctions[auctionId].highestBidder = msg.sender;
 
-        //highestBid = msg.value;
-
-        //emit Bid(msg.sender, msg.value);
         emit Bid(msg.sender, bidPrice);
     }
 

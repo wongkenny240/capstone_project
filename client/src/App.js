@@ -71,7 +71,6 @@ function App() {
                 <Toolbar>
                     <Typography variant="h6" color="inherit">
                         <NavLink className="nav-link" to="/">Home</NavLink>
-                        <NavLink className="nav-link" to="/new/">New Building</NavLink>
                         <NavLink className="nav-link" to="/newprop/">New Property</NavLink>
                         <NavLink className="nav-link" to="/propmarket/">Property Marketplace</NavLink>
                     </Typography>
@@ -80,7 +79,6 @@ function App() {
 
             <Routes>
                 <Route path="/" exact element={<Home />} />
-                <Route path="/new/" element={<NewBuilding />} />
                 <Route path="/newprop/" element={<NewProperty />} />
                 <Route path="/propmarket/" element={<PropertyMarketplace />} />
             </Routes>
