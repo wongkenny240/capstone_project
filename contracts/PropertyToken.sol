@@ -30,6 +30,7 @@ contract PropertyContract is IERC721Metadata, ERC721URIStorage
 
     struct Property{
         uint256 tokenId;
+        string building;
         address owner;
         string location;
         string unit_block;
@@ -72,6 +73,7 @@ contract PropertyContract is IERC721Metadata, ERC721URIStorage
 
         uint256 currentItemId = _tokenIds.current();
         _propertylist[currentItemId] = Property(
+            currentItemId,
             _building,
             _owner,
             _location,
